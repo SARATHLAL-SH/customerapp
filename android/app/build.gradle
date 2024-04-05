@@ -77,10 +77,12 @@ android {
     namespace "com.customerapp"
     defaultConfig {
         applicationId "com.customerapp"
-        minSdkVersion rootProject.ext.minSdkVersion
+        minSdkVersion 26
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        missingDimensionStrategy 'react-native-camera', 'mlkit' 
+        multiDexEnabled true
     }
     signingConfigs {
         debug {
@@ -117,3 +119,4 @@ dependencies {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
