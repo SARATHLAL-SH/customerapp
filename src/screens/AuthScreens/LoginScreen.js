@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import React, {useContext, useState, useRef} from 'react';
 import LoginContext from '../../Contexts/LoginPageContext';
-import {colors} from '../../Globals/Styles';
+import { colors } from '../../Globals/Styles';
 import LoginModal from '../../components/LoginModal';
 
 const LoginScreen = () => {

@@ -6,15 +6,16 @@ import {
   View,
 } from 'react-native';
 import React, {useRef, useState, useContext} from 'react';
-import {colors} from '../../src/Globals/Styles';
-import LoginContext from '../Contexts/LoginPageContext';
-//   import {useNavigation} from '@react-navigation/native';
-// import axios from 'axios';
-// import {API} from '../utils/apiutils';
+import { colors } from '../Globals/Styles';
 
-const LoginModal = () => {
+import LoginContext from '../Contexts/LoginPageContext';
+  import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+import { API } from '../utils/apiUtils';
+
+const LoginModal = ({closeModal}) => {
   const {mobileNumber, setMobileNumber} = useContext(LoginContext);
-  // const Navigation = useNavigation();
+  const Navigation = useNavigation();
 
   const mobileNumberHandler = num => {
     setMobileNumber(num);
@@ -25,7 +26,7 @@ const LoginModal = () => {
 
     try {
       const otpResponce = await axios.post(API + 'send-otp', {mobileNumber});
-      // Navigation.navigate('verifyScreen');
+      Navigation.navigate('OTP Verify');
     } catch (error) {
       console.log('error', error);
     }
@@ -34,12 +35,12 @@ const LoginModal = () => {
     <View style={styles.container}>
       <View>
         <Text style={styles.AccountText}>LOGIN</Text>
-        <Text style={{color: colors.black}}>
+        <Text style={{color: colors.BLACK}}>
           Enter your phone number to proceed
         </Text>
       </View>
       <View style={styles.textinputContainer}>
-        <Text style={{color: colors.black}}>10 digit mobile number</Text>
+        <Text style={{color: colors.BLACK}}>10 digit mobile number</Text>
         <TextInput
           style={styles.textInput}
           keyboardType="numeric"

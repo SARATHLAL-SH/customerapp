@@ -6,6 +6,9 @@ import React from 'react'
 
 const GetAllProducts = () => {
     const [productData,setProductData] = useState([]);
+   
+
+   useEffect(()=>{
     const getAllProducts = async()=>{
         try{
             const response = await axios.get(API+"get-all-wine-subcategories");
@@ -19,8 +22,6 @@ const GetAllProducts = () => {
             console.log(error)
         }
     }
-
-   useEffect(()=>{
     getAllProducts();
     },[])
 

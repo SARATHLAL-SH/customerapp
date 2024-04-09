@@ -1,23 +1,25 @@
 import { StyleSheet, Text, View,TextInput,Dimensions, } from 'react-native'
-import React,{useContext, useState} from 'react'
+import React,{useContext, useEffect, useState} from 'react'
 import { colors } from '../Globals/Styles';
 import Icon from 'react-native-vector-icons/Entypo';
-// import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import LoginContext from '../Contexts/LoginPageContext';
+import SearchScreen from '../screens/UserScreens/SearchScreen';
+import UserHomeScreen from '../screens/UserScreens/UserHomeScreen';
 
 
 const SearchBar = ({locationName}) => {
-    // const navigation =useNavigation()
-    const [searchText, setSearchText] = useState('');
-    const SerachPageHandler=()=>{
-      console.log("search")
-    }
+    const navigation = useNavigation()
+    const {searchText, setSearchText} = useContext(LoginContext)
+  
+
     
   return (
     <View style={styles.container}>
       
       <TextInput style={styles.input}
        placeholder='Search' onChangeText={text=>setSearchText(text)}
-       value={searchText}  placeholderTextColor={colors.WHITE} onPressIn={SerachPageHandler}/>
+       value={searchText}  placeholderTextColor={colors.MAIN_COLOR} />
        
        <View style={styles.locationContainer}>
         <Icon name="location-pin" size={25} color={colors.MAIN_COLOR} />
@@ -25,6 +27,7 @@ const SearchBar = ({locationName}) => {
        </View>
 
     </View>
+   
   )
 }
 
@@ -50,14 +53,14 @@ const styles = StyleSheet.create({
       input: {
         flex: 1,
         height: 40,
-        borderColor: colors.WHITE,
+        borderColor: colors.MAIN_COLOR,
         borderWidth: 1,
         borderRadius: 5,
         marginRight: 5,
         paddingLeft: 10,
-        color:colors.WHITE,
+        color:colors.BLACK,
         fontWeight:'700',
-        fontSize:18,
+        fontSize:16,
       },
       locationContainer:{
         flexDirection:'colum',

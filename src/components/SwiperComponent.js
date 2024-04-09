@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
       swiperContainer:{
       borderRadius:10,
       overflow:'hidden',
-      height:Dimensions.get('screen').width*0.25,
+      height:Dimensions.get('screen').width*0.35,
       elevation:20
     },
       slide1: {

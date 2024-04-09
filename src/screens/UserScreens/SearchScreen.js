@@ -1,44 +1,53 @@
-import { StyleSheet, Text, View,FlatList,Image } from 'react-native'
+import { StyleSheet, Text, View,FlatList,Image, TouchableOpacity } from 'react-native'
 import React, { useContext } from 'react'
-import GetLocation from '../../components/GetLocation'
-import CategoryData from '../../data/CategoryData'
 import { colors } from '../../Globals/Styles'
 import { useEffect, useState } from 'react'
 import { API } from '../../utils/apiUtils'
+import LoginContext from '../../Contexts/LoginPageContext'
+import {useNavigation} from '@react-navigation/native'
+
 
 
 const SearchScreen = () => {
   const [inputValue, setInputValue] = useState();
   const [filterdata, setFilterData] = useState([]);
-    const {categoryData,error} = CategoryData();
+  const navigation = useNavigation()
    
+const {subCategory,apiError,searchText, setSearchText} = useContext(LoginContext)
+const ProductDetailsHandler = (item)=>{
+  navigation.navigate("Product Details",{product:item})
+}
     
     useEffect(() => {
-      if (!inputValue) {
-        setFilterData(categoryData);
-      } else {
-        const filtered = categoryData.filter(data =>
-          data.name.toLowerCase().startsWith(inputValue.toLowerCase()),
+      
+    
+        const filtered = subCategory.filter(data =>
+          data.name.toLowerCase().includes(searchText.toLowerCase())
+        
         );
-        setFilterData(filtered, categoryData);
-      }
-    }, [inputValue, categoryData]);
-
+       
+        setFilterData(filtered);
+        
+    
+    }, [searchText, subCategory]);
+    console.log("filterData", filterdata)
+    console.log(searchText)
     const renderItem = ({item}) => (
-      <View style={styles.categoryContainer}>
-        {console.log(item)}
-        <Text style={{color:"white", marginTop:20,fontWeight:"700",fontSize:22}}>  {item.name}</Text>
-        <Image
-          source={{uri: API + item.image} } 
-          style={styles.image}
-        />
-      <Text style={{color:"white",}}>{"http://192.168.0.114:2020/get/image/" + item.image}</Text>
-        <Text style={{color:"white"}}>{item.description}</Text>
-      </View>
+      <TouchableOpacity style={styles.categoryContainer} onPress={()=>ProductDetailsHandler(item)}>
+      <Image source={{uri:API+"get/imageswinesubcategories/"+item.images}} style={styles.image}/>
+     <View style={styles.detailContainer}>
+     <Text style={styles.searchItemName} numberOfLines={1} 
+              ellipsizeMode="tail">  {item.name}</Text>
+     <Text style={styles.searchItemPrice}>  ₹{item.price}</Text>
+     <Text style={styles.searchItemMl}>  {item.miligram} ML</Text>
+
+     </View>
+        
+      </TouchableOpacity>
     );
   return (
     <View style={styles.container}>
-     <GetLocation/>
+    
      <View style={styles.borderContainer}>
      <View style={styles.subContainer}>
     
@@ -62,10 +71,33 @@ const styles = StyleSheet.create({
     subContainer:{height:'91.5%',
     backgroundColor:colors.SECONDARY_COLOR
   },
+  categoryContainer:{
+flexDirection:'row',
+backgroundColor:colors.HEADER_CONTAINER,
+marginBottom:5,
+elevation:10,
+
+  },
   image: {
-    width: 200,
-    height: 200,
+    width: 100,
+    height: 100,
     resizeMode: 'cover',
     margin:5
   },
+  detailContainer:{
+paddingRight:10
+  },
+  searchItemName:{
+    color:"black", marginTop:20,fontWeight:"700",fontSize:20
+
+  },
+  searchItemPrice:{
+    fontSize:16,
+    fontWeight:'700',
+    color:colors.MAIN_COLOR
+  },
+  searchItemMl:{
+    fontWeight:'700',
+    color:'#064710'
+  }
 })
