@@ -24,8 +24,8 @@ const SelectIDScreen = () => {
       <View style={styles.wraper}>
         <View>
           <View style={styles.subContainer}>
-            <Text>Step 1/3</Text>
-            <Text>Pick an ID with your latest updated photos</Text>
+            <Text style={{color:colors.BLACK}}>Step 1/3</Text>
+            <Text style={{color:colors.BLACK}}>Pick an ID with your latest updated photos</Text>
           </View>
 
           {isAdhaar ? <AdhaarCard /> : isPanCard ? <PanCard /> : <IdSelector />}
@@ -59,7 +59,7 @@ const SelectIDScreen = () => {
                 I agree to have my ID details and selfie uploaded for
                 verification. I have read and accepted the terms of{' '}
                 <TouchableOpacity style={{}}>
-                  <Text style={{fontWeight: '700', paddingBottom: 0}}>
+                  <Text style={{fontWeight: '700', paddingBottom: 0,color:colors.GREEN}}>
                     Privacy Policy
                   </Text>
                 </TouchableOpacity>
@@ -141,5 +141,6 @@ const styles = StyleSheet.create({
       termsText: {
         marginLeft: 15,
         marginRight: 10,
+        color:colors.BLACK
       },
 })

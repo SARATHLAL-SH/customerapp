@@ -18,6 +18,8 @@ import VerifyScreen from '../screens/AuthScreens/VerifyScreen';
 import HomeVerification from '../screens/AuthScreens/AuthVerificationScreens/HomeVerification';
 import Signup from '../screens/AuthScreens/AuthVerificationScreens/Signup';
 import SelectIDScreen from '../screens/VerificationScreens/SelectIDScreen';
+import UploadAdhaar from '../screens/AuthScreens/AuthVerificationScreens/UploadAdhaar';
+import MapLocationSelector from '../screens/UserScreens/MapLocationSelector';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,11 +36,18 @@ const Navigations = () => {
        <Stack.Screen name="My Cart" component={MyCart}/>
        <Stack.Screen name="Search" component={SearchScreen}/>
        <Stack.Screen name="Category Details" component={Categories}/> */}
-       <Stack.Screen name="Login" component={LoginScreen}/>
+       {/* <Stack.Screen name='Select Location' component={MapLocationSelector}/> */}
+       <Stack.Screen name='Shop Details' component={MapComponent}/>
+
+
+
+
+       {/* <Stack.Screen name="Login" component={LoginScreen}/>
        <Stack.Screen name="OTP Verify" component={VerifyScreen}/>
        <Stack.Screen name="Verify" component={HomeVerification}/>
        <Stack.Screen name="Signup" component={Signup}/>
        <Stack.Screen name = 'Select ID' component={SelectIDScreen}/>
+       <Stack.Screen name='Upload Aadhaar' component={UploadAdhaar}/> */}
        
 
       </Stack.Navigator>

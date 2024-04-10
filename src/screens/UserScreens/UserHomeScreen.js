@@ -19,6 +19,7 @@ const UserHomeScreen = ({ dismissKeyboard }) => {
   const [numRowsToShow, setNumRowsToShow] = useState(9);
   const navigation = useNavigation(); 
   const [loading, setLoading] = useState(true);
+  const [shouldFetchData, setShouldFetchData] = useState(true)
 
   useEffect(() => {
     const getAllProducts = async()=>{
@@ -47,10 +48,18 @@ const UserHomeScreen = ({ dismissKeyboard }) => {
           console.log("userHomeScreen Error",error)
       }
   }
+  if (shouldFetchData) {
+   getAllProducts();
+    // Once data is fetched, set shouldFetchData to false so that data fetching doesn't occur again
+    setShouldFetchData(false);
+  }
   getAllProducts();
 
   
-}, []);
+}, [shouldFetchData]);
+if (loading || shouldFetchData) {
+  return null;
+}
   const categrySearchHandler=(categoryId)=>{
     navigation.navigate('Category Details',{categoryId:categoryId})
   }

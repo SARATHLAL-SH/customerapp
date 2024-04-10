@@ -85,12 +85,13 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     fontSize: 18,
     marginTop: 10,
+    color:colors.BLACK
   },
   textinputPrefix: {
     position: 'absolute',
     bottom: 3,
     fontSize: 18,
-    color: colors.MAIN_COLORt,
+    color: colors.MAIN_COLOR,
   },
   loginBtnContainer: {
     backgroundColor: colors.MAIN_COLOR,

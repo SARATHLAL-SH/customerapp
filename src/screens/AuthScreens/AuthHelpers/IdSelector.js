@@ -29,7 +29,7 @@ const IdSelector = () => {
         </TouchableOpacity>
       </View>
       <View>
-        <Text>
+        <Text style={{color:colors.BLACK}}>
           Your privacy is important to us. The details shared are used with
           complete discretion and stroed securely
         </Text>

@@ -167,6 +167,7 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     fontSize: 18,
     marginTop: 10,
+    color:colors.BLACK
   },
   formContainer: {
     paddingHorizontal: 8,

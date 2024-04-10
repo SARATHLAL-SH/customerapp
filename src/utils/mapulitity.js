@@ -2,31 +2,51 @@ import { PermissionsAndroid,View,TouchableOpacity,Image,StyleSheet,Text } from "
 import Geolocation from '@react-native-community/geolocation'
 import * as geolib from 'geolib'
 import { colors } from "../Globals/Styles";
-export const locationRequest = async (setShoplist,setLocation,orderShop)=>{
-    try{
-      const granted = await PermissionsAndroid.request
-      (PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
-        title:"Location Permission",
-        message:"This app require access to your location.",
-        buttonPositive:'OK'
-      })
+export const locationRequest = async (setShoplist, setLocation, orderShop) => {
+  try {
+    const granted = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+    );
 
-      if(granted === PermissionsAndroid.RESULTS.GRANTED){
-        Geolocation.getCurrentPosition
-        (async position => {
-          const { latitude, longitude } = position.coords;
-          setShoplist(orderShop)
-          setLocation({ latitude, longitude }); },
-          (error) => console.log("permission denied",error),
-          { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
-        );
-        } else{
-          console.log("Location Permission Denied")
+    if (granted) {
+      await retrieveLocation(setShoplist, setLocation, orderShop);
+    } else {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: "Location Permission",
+          message: "This app requires access to your location.",
+          buttonPositive: "OK",
         }
-      }catch(err){
-        console.warn("Error",err)
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        await retrieveLocation(setShoplist, setLocation, orderShop);
+      } else {
+        console.log("Location Permission Denied");
+        // Handle permission denial
       }
     }
+  } catch (error) {
+    console.warn("Error requesting location permission:", error);
+    // Handle error (e.g., display an error message to the user)
+  }
+};
+
+const retrieveLocation = async (setShoplist, setLocation, orderShop) => {
+  Geolocation.getCurrentPosition(
+    async (position) => {
+      const { latitude, longitude } = position.coords;
+      setShoplist(orderShop);
+      setLocation({ latitude, longitude });
+    },
+    (error) => {
+      console.log("Error getting current position:", error);
+      // Handle error (e.g., display an error message to the user)
+    },
+    { enableHighAccuracy: true, timeout: 100000, maximumAge: 10000 }
+  );
+};
 
 //    export const renderItem =({item,location,})=>(
 //         <View>

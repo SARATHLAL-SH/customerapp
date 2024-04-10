@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
       fontWeight: '700',
       color: colors.WHITE,
     },
-    header: {fontSize: 18, fontWeight: '600'},
+    header: {fontSize: 18, fontWeight: '700',color:colors.BLACK,marginBottom:10},
     verificationContainer: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -96,5 +96,6 @@ const styles = StyleSheet.create({
       fontSize: 18,
       fontWeight: '600',
       flexWrap: 'wrap',
+      color:colors.BLACK
     },
   });
