@@ -77,7 +77,7 @@ android {
     namespace "com.customerapp"
     defaultConfig {
         applicationId "com.customerapp"
-        minSdkVersion 26
+        minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
@@ -104,12 +104,17 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+    tasks.whenTaskAdded { task ->
+        if (task.name == 'generateReleaseLintVitalReportModel' || task.name == 'generateDebugLintReportModel') {
+            task.dependsOn(':app:copyReactNativeVectorIconFonts')
+        }
+    }
 }
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-    implementation("com.facebook.react:flipper-integration")
+    implementation("com.facebook.react:react-android")
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")

@@ -1,9 +1,35 @@
 import { Dimensions, Image, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Swiper from 'react-native-swiper'
+import { API } from '../utils/apiUtils'
+import axios from 'axios'
+import { useSafeAreaFrame } from 'react-native-safe-area-context'
+
 
 
 const SwiperComponent = () => {
+  const[imgUrl,setImgUrl] = useState()
+  
+    const swiperData = async ()=>{
+      try{
+      const imgurl = await axios.get(API+"get-all-swiper-post-images");
+      if(imgurl){
+    setImgUrl(imgurl.data);
+      }
+      else{
+        console.log("no images available")
+      }
+  }
+
+catch(error){
+  console.log("error in swiperComponent", error)
+}
+    }
+   
+useEffect(()=>{
+  swiperData();
+},[])
+
   return (
     <View style={styles.container}>
     <View style={styles.swiperContainer}>
@@ -11,9 +37,16 @@ const SwiperComponent = () => {
     <Swiper style={styles.wrapper} showsButtons={true} loop={true} autoplay={true}>
         
         <View style={styles.slide1}>
+          
           <Image source={require('../../Assets/Images/champagner.jpg')}style={styles.image} />
         </View>
+        {imgUrl?.map((img)=>(
+        <Image key={img._id} source={{uri:API+"imagesswiper/"+img.images}} style={styles.image}/>
 
+        ))}
+       
+        <Image source={{uri:API+"imagesswiper/1713248773389pistachios swiper.jpg"}} style={styles.image}/>
+       
         <View style={styles.slide2}>
         <Image source={require('../../Assets/Images/cocktailCvr.jpg')} style={styles.image} />
         </View>
@@ -23,7 +56,7 @@ const SwiperComponent = () => {
         </View>
         
       </Swiper>
-
+      
       </View>
       </View>
   )

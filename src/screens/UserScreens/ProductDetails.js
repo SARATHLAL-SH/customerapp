@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View,Image, Dimensions, TouchableOpacity  } from 'react-native'
 import {useRoute,useNavigation} from '@react-navigation/native'
-import React, { useState,useEffect } from 'react'
+import React, { useState,useEffect, useContext } from 'react'
 import { colors } from '../../Globals/Styles'
 import { API } from '../../utils/apiUtils'
 import AddCartModal from '../../components/AddCartModal'
 import axios from 'axios'
+import LoginContext from '../../Contexts/LoginPageContext'
+import { fetchUser } from '../AuthScreens/Utils/navigationutils';
 
 const ProductDetails = () => {
    const route = useRoute();
@@ -16,27 +18,41 @@ const ProductDetails = () => {
    const ml = product.miligram;
    const[message,setMessage] = useState();
    const cart =product._id
+   const {setListCount,getcartCount} =useContext(LoginContext)
+   const [mobileNumber,setMobileNmber] = useState()
+  
+const fetchUsermobile = async()=>{
+ const mobileNumbers = await fetchUser();
+  setMobileNmber(mobileNumbers);
+}
+
+   useEffect(()=>{
+    fetchUsermobile();
+   },[])
+console.log("mobile in prouductDetails", mobileNumber)
    const clearMessageHandler =(msg)=>{
     setMessage(msg)
     setTimeout(()=>{
       setMessage("")
     },3000)
    }
+ console.log("mjobile",  quantity, totalPrice,ml,cart,mobileNumber)
    const addtoCartHandler = async () => {
     try{
       
-      const response = await axios.post(API+"add-to-cart",{quantity,totalPrice,ml,cart}) ;
+      const response = await axios.post(API+"add-to-cart",{quantity,ml,totalPrice,cart,mobileNumber}) ;
         if(response.data){
+          getcartCount();
           setModalVisible(true);
           
     }
     else{
       clearMessageHandler("Failed to load Data")
-      
+      console.log(error.message)
     }
     }catch(error){
       clearMessageHandler("Failed to add item to Cart")
-      console.log(error)
+      console.log(error.message)
   }
    };
  
@@ -55,9 +71,12 @@ const removeItemHandler = ()=>{
     setQuantity(quantity>1 ? quantity - 1 : 1)
    
 }
+
 useEffect(() => {
+ 
     setTotalPrice(quantity > 0 ? quantity * product.price:totalPrice);
   }, [quantity, product.price]);
+ 
   return (
     <View style={styles.container}>
 
@@ -84,6 +103,7 @@ useEffect(() => {
 
         <Text style={styles.price}>₹{totalPrice}</Text>
         <Text style={styles.miligram}>ML{product.miligram} * {quantity>1?quantity:null}</Text>
+
         </View>
        
         
@@ -175,7 +195,7 @@ const styles = StyleSheet.create({
        
     },
       addCartContainer:{
-        backgroundColor:'#5c0074',
+        backgroundColor:'#b5045f',
         height:40,
         paddingHorizontal:10,
         justifyContent:'center',

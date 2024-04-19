@@ -3,7 +3,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View, Keyboard
 } from 'react-native';
 import React, {useRef, useState, useContext} from 'react';
 import { colors } from '../Globals/Styles';
@@ -20,7 +20,7 @@ const LoginModal = ({closeModal}) => {
   const mobileNumberHandler = num => {
     setMobileNumber(num);
   };
-
+  
   const LoginHandler = async () => {
     closeModal();
 
@@ -47,6 +47,7 @@ const LoginModal = ({closeModal}) => {
           maxLength={10}
           value={mobileNumber}
           onChangeText={mobileNumberHandler}
+          
         />
         <Text style={styles.textinputPrefix}>+91</Text>
       </View>
@@ -57,6 +58,7 @@ const LoginModal = ({closeModal}) => {
             style={{...styles.loginBtnContainer}}
             onPress={LoginHandler}>
             <Text style={styles.btnText}>CONTINUE</Text>
+           { Keyboard.dismiss()}
           </TouchableOpacity>
         </View>
       ) : null}

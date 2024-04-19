@@ -7,38 +7,37 @@ import SearchScreen from './UserScreens/SearchScreen'
 import { colors } from '../Globals/Styles'
 import DeliveryChargeModal from '../components/DeliveryChargeModal'
 import AddCartModal from '../components/AddCartModal'
+import CartNotification from '../components/CartNotification'
+import  axios  from 'axios';
+import { API } from '../utils/apiUtils'
 
 
 const RenderHome = () => {
     const [searchTextValue,setSearchTextValue] = useState()
     const [listcounts,setListCounts] = useState()
-const {searchText,listCount} = useContext(LoginContext)
+    const[count,setCount] = useState()
+const {searchText,listCount,getcartCount} = useContext(LoginContext)
+
+useEffect(()=>{
+  getcartCount();
+  },[])
+ 
+
+useEffect(()=>{
+setSearchTextValue(searchText.length) 
+},[searchText,])
 
 const dismissKeyboard = () => {
     Keyboard.dismiss();
   };
-
-const checkCart =async()=>{
-    try{
-        const response = await  axios.get(API+"get-add-cart");
-        if(response){
-          setCartItems(response.data)
-          setListCounts(response?.data?.data.length);}
-    }catch(error){
-        console.log(error)
-    }
-}
   
-useEffect(()=>{
-  setSearchTextValue(searchText.length) 
-  checkCart(); 
-},[searchText,])
   return ( 
     <View style={styles.container}>
      <GetLocation/>
     
      {searchTextValue>0?<SearchScreen/>:<UserHomeScreen dismissKeyboard={dismissKeyboard}/>}
-     {/* {listCount>0?<AddCartModal data={"Items in your cart"} count={listCount}/>:""} */}
+     {listCount>0?<CartNotification itemCount={listCount}/>:""}
+     
     </View>
   )
 }

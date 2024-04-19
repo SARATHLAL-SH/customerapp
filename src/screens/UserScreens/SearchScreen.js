@@ -21,7 +21,7 @@ const ProductDetailsHandler = (item)=>{
     useEffect(() => {
       
     
-        const filtered = subCategory.filter(data =>
+        const filtered = subCategory?.filter(data =>
           data.name.toLowerCase().includes(searchText.toLowerCase())
         
         );

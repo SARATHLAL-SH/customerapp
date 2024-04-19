@@ -7,6 +7,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import LoginContext from '../../Contexts/LoginPageContext'
 import DeliveryChargeModal from '../../components/DeliveryChargeModal'
+import {useNavigation} from '@react-navigation/native'
+import {fetchUser} from '../AuthScreens/Utils/navigationutils'
 
 
 const MyCart = () => {
@@ -18,36 +20,40 @@ const MyCart = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const ml = cartItems?.data?.ml;
   const {listCount,setListCount} = useContext(LoginContext)
+  const navigation =useNavigation();
+  const [mobileNumber,setMobileNmber] = useState()
 
+
+  const fetchUsermobile = async()=>{
+    const mobileNumbers = await fetchUser();
+     setMobileNmber(mobileNumbers);
+   }
+   
+      useEffect(()=>{
+       fetchUsermobile();
+      },[])
   const fetchCartDetails = async()=>{
     try{
-      const response = await  axios.get(API+"get-add-cart");
+      const response = await  axios.get(API+"get-add-cart-all");
       if(response){
         setCartItems(response.data)
         setListCount(response?.data?.data.length);
-
       const initialQuantities = response.data.data.reduce((acc, item) => {
         acc[item._id] = item.quantity;
         return acc;
       }, {});
-
-        setItemQuantities(initialQuantities);
-
+      setItemQuantities(initialQuantities);
       const totalPricedata = response.data.data.reduce((acc,item)=>{
         acc[item._id] = item.cart?.price;
         return acc;
       }, {})
-
         setTotalPrice(totalPricedata)
-
        }
-
       else{
         console.log("unable to fetch data ")
       }
-
     } catch(error){
-      console.log("cart",error)
+      console.log("cart inside MyCart",error)
     }
   }
        
@@ -56,66 +62,75 @@ const MyCart = () => {
   Object.keys(itemQuantities).forEach(id => {
     const quantity = itemQuantities[id];
     const price = totalPrice[id];
-
     if (quantity !== undefined && price !== undefined) {
-      grandTotal += quantity * price;
+    grandTotal += quantity * price;
     }
-
   });
- console.log("grandTotal",grandTotal)
+ 
   setGrandTotals(grandTotal);
-  
- }
+   }
+
 useEffect(() => {
   grandTotalHandler();
-  
-}, [itemQuantities, totalPrice,]);
+  }, [itemQuantities, totalPrice,]);
 
   useEffect(()=>{
-   
   fetchCartDetails();
   },[])
-  console.log(grandTotals)
-  const addItemHandler =(itemId)=>{
+
+  
+  const addItemHandler =async(itemId)=>{
     const updatedQuantities = { ...itemQuantities };
     updatedQuantities[itemId] = Math.min(Math.max((updatedQuantities[itemId] || 0) + 1, 1), 5);
     setItemQuantities(updatedQuantities);
+   const selectedProduct= cartItems?.data?.find(item=>item._id ===itemId);
+    
+    const product = {
+      quantity:updatedQuantities[itemId],
+      totalPrice:selectedProduct.price,
+      ml:selectedProduct.ml,
+      cart:selectedProduct.cart._id,
+    }
+try{
+  const updateCart = await axios.put(API+'update-cart/'+itemId,product)
+  console.log("Cart item updated successfully:", updateCart.data);
+}catch(error){
+  console.log("error in my cart when AddItemHandler",error)
+}
   }
 
   const removeItemHandler = async(cartId)=>{
     const updatedQuantities = { ...itemQuantities };
     updatedQuantities[cartId] = Math.max((updatedQuantities[cartId] || 0) - 1, 0);
-
      if(updatedQuantities[cartId]<1){
       try{const response = await axios.delete(`${API}delete-cart-item/${cartId}`)
       
       if(response.data){
-        console.log("cart items", cartItems)
-        setCartItems(prevItems => ({
-          ...prevItems,
-          data: prevItems.data.filter(item => item._id !== cartId)
-        }));
-        setListCount(prevCount => prevCount - 1);
-
-        grandTotalHandler();
-
-        console.log(response.data)
-        console.log("deleted")
+      
+      setCartItems(prevItems => ({
+      ...prevItems,
+      data: prevItems.data.filter(item => item._id !== cartId)
+      }));
+      
+      setListCount(prevCount => prevCount - 1);
+      fetchCartDetails();
+      grandTotalHandler();
+      
+    
       }
-
       else{
-        console.log("error")
-      }}catch(error){console.log(error)}
+      console.log("error")
+      }}catch(error){console.log("error in my cart removeItemhandler",error)}
      }
-
      else{
       setItemQuantities(updatedQuantities);
      }
   }
+ 
   const closeModal = () => {
     setModalVisible(!modalVisible);
-    
-  };
+    };
+   
   const renderCartItems = ({ item }) => {
     return (
       <View style={styles.listItemContainer}>
@@ -126,8 +141,8 @@ useEffect(() => {
         <Text style={styles.productName}>{item?.cart?.name}</Text>
         <Text style={styles.productMl}>ML: {item.ml} {`${itemQuantities[item._id] > 1 ? `(${itemQuantities[item._id]})` : ""}`}</Text>
         <Text style={styles.productPrice}>Total Price: ₹{itemQuantities[item._id]*totalPrice[item._id]}</Text>
-        
         <View style={styles.qtyContainer}>
+
         <TouchableOpacity style={styles.minusContainer} onPress={()=>removeItemHandler(item._id)}>
           <Text style={styles.decrease}>{itemQuantities[item._id]<2?<Icons name="delete" size={15} color="#f7f305" />:"-"}</Text>
         </TouchableOpacity>
@@ -158,7 +173,7 @@ useEffect(() => {
       <View style={{height:"57%"}}>
       {cartItems &&(<FlatList data={cartItems.data} renderItem={({ item }) => {
       return renderCartItems({ item });
-  }}  keyExtractor={item=>item?._id.toString()} />)}
+  }}  keyExtractor={item=>item?._id} />)}
       </View>
       <View style={styles.paymentContainer}>
         <View style={styles.paymentCaptionContainer}>
@@ -180,7 +195,7 @@ useEffect(() => {
         </View>
        
       </View>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=>navigation.navigate('Delivery Location')}>
         <View style={styles.locationContainer}>
         <Icon name="location" size={30} color="#f5dce3" />
           <Text style={styles.location}>ADD ADDRESS TO PROCEED</Text>

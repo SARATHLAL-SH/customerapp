@@ -1,5 +1,5 @@
 import {View, Text} from 'react-native';
-import React from 'react';
+import React, { useContext, useEffect,useState } from 'react';
 import LoginScreen from '../screens/AuthScreens/LoginScreen';
 import {LoginPageContext} from '../Contexts/LoginPageContext';
 import GetLocation from '../components/GetLocation';
@@ -20,38 +20,89 @@ import Signup from '../screens/AuthScreens/AuthVerificationScreens/Signup';
 import SelectIDScreen from '../screens/VerificationScreens/SelectIDScreen';
 import UploadAdhaar from '../screens/AuthScreens/AuthVerificationScreens/UploadAdhaar';
 import MapLocationSelector from '../screens/UserScreens/MapLocationSelector';
+import {createDrawerNavigator} from '@react-navigation/drawer'
+import { fetchToken, fetchUser } from '../screens/AuthScreens/Utils/navigationutils';
+import SignoutPage from '../screens/SignoutPage';
+import DeliveryLocation from '../screens/UserScreens/DeliveryLocation';
+import OrderStatus from '../screens/OrderStatus';
 
 const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
 
 const Navigations = () => {
+  const [isToken, setIsToken] = useState(null);
+  
+console.log(isToken)
+  useEffect(()=>{
+    const checkToken = async ()=>{
+      try {
+        const token = await fetchToken();
+        console.log('token checking', token);
+        const usermobile = await fetchUser()
+        console.log("userobile", usermobile)
+        if (token) {
+          setIsToken(token);
+        } else {
+          setIsToken(null);
+        }
+      } catch (error) {
+        console.error('Error checking token:', error);
+      }
+    }
+    checkToken();
+  }, [])
+  
+
+  const AppDrawer = () => {
+    return (
+      <Drawer.Navigator initialRouteName="HomeScreen" screenOptions={{ headerShown: false }}>
+        <Drawer.Screen name="HomeScreen" component={AppStack}/>
+        <Drawer.Screen name="Select Location" component={MapLocationSelector}/>
+        <Drawer.Screen name="Shop Details" component={MapComponent}/>
+        <Drawer.Screen name="Sign out" component={SignoutPage}/>
+        
+      </Drawer.Navigator>
+    );
+  }
+  
+  const AppStack = () => {
+    return (
+      <Stack.Navigator initialRouteName="Home">
+      <Stack.Screen name="Home" component={RenderHome} />
+      <Stack.Screen name="Product Details" component={ProductDetails} />
+      <Stack.Screen name="My Cart" component={MyCart} />
+      <Stack.Screen name="Search" component={SearchScreen} />
+      <Stack.Screen name="Category Details" component={Categories} />
+      <Stack.Screen name="Delivery Location" component={DeliveryLocation}/>
+      <Stack.Screen name='Order Status' component={OrderStatus} options={{headerShown:true}}/>
+    </Stack.Navigator>
+    );
+  }
+
+  const AuthStack = () =>{
+    return(
+    <Stack.Navigator>
+       <Stack.Screen name="Login" component={LoginScreen}/>
+       <Stack.Screen name="OTP Verify" component={VerifyScreen}/>
+       <Stack.Screen name="Verify" component={HomeVerification}/>
+       <Stack.Screen name="Signup" component={Signup}/>
+       <Stack.Screen name = 'Select ID' component={SelectIDScreen}/>
+       {/* <Stack.Screen name='Upload Aadhaar' component={UploadAdhaar}/>  */}
+     </Stack.Navigator>)
+  }
   
   return (
     
   
     <LoginPageContext>
-      <Stack.Navigator>
-
-       {/* <Stack.Screen name="Home" component={RenderHome}/>
-       <Stack.Screen name="Product Details" component={ProductDetails}/>
-       <Stack.Screen name="My Cart" component={MyCart}/>
-       <Stack.Screen name="Search" component={SearchScreen}/>
-       <Stack.Screen name="Category Details" component={Categories}/> */}
-       {/* <Stack.Screen name='Select Location' component={MapLocationSelector}/> */}
-       <Stack.Screen name='Shop Details' component={MapComponent}/>
-
-
-
-
-       {/* <Stack.Screen name="Login" component={LoginScreen}/>
-       <Stack.Screen name="OTP Verify" component={VerifyScreen}/>
-       <Stack.Screen name="Verify" component={HomeVerification}/>
-       <Stack.Screen name="Signup" component={Signup}/>
-       <Stack.Screen name = 'Select ID' component={SelectIDScreen}/>
-       <Stack.Screen name='Upload Aadhaar' component={UploadAdhaar}/> */}
-       
-
-      </Stack.Navigator>
-    </LoginPageContext>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    {isToken ?<Stack.Screen name="AppDrawer" component={AppDrawer} />:
+    <Stack.Screen name="AuthStack" component={AuthStack} />}
+      <Stack.Screen name="Home Screen" component={AppDrawer} />
+      <Stack.Screen name="Login Screen" component={AuthStack} />
+      {/* <Stack.Screen name='Order Status' component={OrderStatus} options={{headerShown:false}}/> */}
+         </Stack.Navigator>
+  </LoginPageContext>
    
   );
 };

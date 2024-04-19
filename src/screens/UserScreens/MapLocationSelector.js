@@ -1,25 +1,37 @@
 import { StyleSheet, Text, View,Button  } from 'react-native'
-import React,{ useState } from 'react'
+import React,{ useContext, useEffect, useState } from 'react'
 import MapView, { Marker } from 'react-native-maps';
+import LoginContext from '../../Contexts/LoginPageContext';
+import SetPermenantAddress from '../SetPermenantAddress';
+import { ScrollView } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 
 const MapLocationSelector = () => {
     const [selectedLocation, setSelectedLocation] = useState(null);
-
+const {userLocationCoords} = useContext(LoginContext)
+const {latitude,longitude} = userLocationCoords;
   const handleMarkerDragEnd = (event) => {
     const { coordinate } = event.nativeEvent;
+
     setSelectedLocation(coordinate);
+   
   };
 
+  
+console.log("userlocation cords",latitude,longitude)
   return (
-    <View style={{ flex: 1 }}>
+    <>
+    <View style={{ height:'50%'}}>
       <MapView
         style={{ flex: 1 }}
         onPress={(event) => setSelectedLocation(event.nativeEvent.coordinate)}
         initialRegion={{
-          latitude: 37.78825, // Initial map latitude
-          longitude: -122.4324, // Initial map longitude
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
+          latitude: latitude && latitude, // Initial map latitude
+          longitude: longitude && longitude, // Initial map longitude
+          latitudeDelta: 0.02,
+          longitudeDelta: 0.02,
         }}
       >
         {selectedLocation && (
@@ -37,7 +49,12 @@ const MapLocationSelector = () => {
           <Text>Longitude: {selectedLocation.longitude}</Text>
         </View>
       )}
+      
     </View>
+    <ScrollView>
+    <SetPermenantAddress latitude={selectedLocation?.latitude} longitude={selectedLocation?.longitude}/>
+    </ScrollView>
+    </>
   )
 }
 

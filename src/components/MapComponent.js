@@ -45,9 +45,9 @@ const MapComponent = () => {
         console.log(error)
       }
     }
-    shopLocation();
+    shopLocation(markersList);
   },[setMarkersList,setLocation])
-
+    console.log(markersList)
   const handleShopSelection = async (selectedShop) => {
     setSelectedShop(selectedShop);
     console.log("selectedShop",selectedShop)
@@ -58,19 +58,21 @@ const MapComponent = () => {
     setDirections(directionsData?.routes[0]?.overview_polyline.points);
   };
 
-  const renderItem =({item,location,})=>(
-    <View>
+  const renderItem =({item,location,})=>{
+    const distanceInMeters = geolib.getDistance(location, { latitude: item.latitude, longitude: item.longitude });
+    const distanceInKilometers = (distanceInMeters / 1000).toFixed(1);
+   return( <View>
       <TouchableOpacity style={{justifyContent:'center',alignItems:'center', margin:10}} onPress={()=>handleShopSelection(item)}>
         <Image source={require('../../Assets/Images/wineCoverImage.jpg')} style={styles.shopImage}/>
+        <Image source={{uri: API+'get-wineshop-image' + item.image}}  style={styles.shopImage} />
         <Text style={{fontWeight:'700',marginTop:5, color:'red',fontSize:16}}>{item.title}</Text>
-        <Text style={[styles.genrealTextColor,{fontWeight:"700"}]}>{`${geolib.getDistance(location,
-        { latitude: item.latitude, longitude: item.longitude }) / 1000} km`}</Text>
+        <Text style={[styles.genrealTextColor,{fontWeight:"700", color:'black'}]}> {`${distanceInKilometers} km`}</Text>
       </TouchableOpacity>
-   </View>
-    )
+   </View>)
+  }
 
   return (
-   <View style={{backgroundColor:colors.SECONDARY_COLOR}}>
+   <View style={{backgroundColor:colors.SECONDARY_COLOR,height:"100%"}}>
     <View style={styles.container}>
         <MapView provider={PROVIDER_GOOGLE} style={styles.map}
         region={{latitude:location?.latitude, longitude:location?.longitude, latitudeDelta:0.05, longitudeDelta:0.05}}>
@@ -105,7 +107,7 @@ const MapComponent = () => {
     </View>
 
     <View style={styles.shopOrderContainer}>
-    <Text style={[styles.genrealTextColor,{fontSize:24}]}>Nearest Shop Details</Text>
+    <Text style={[styles.genrealTextColor,{fontSize:24, color:colors.BLACK}]}>Nearest Shop Details</Text>
       {shoplist && (<FlatList data={shoplist} renderItem={({item})=>renderItem({item,location,})}
        keyExtractor={item=>item?.id.toString()} horizontal={true}/>)}
     </View>

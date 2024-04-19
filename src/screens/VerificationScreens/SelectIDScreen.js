@@ -15,8 +15,8 @@ const SelectIDScreen = () => {
   const Navigation = useNavigation();
 
   const UploadIDHandler = () => {
-    isAdhaar && Navigation.navigate('Upload Aadhaar');
-    isPanCard && Navigation.navigate('Upload PanCard');
+    isAdhaar && Navigation.navigate('Home Screen');
+    isPanCard && Navigation.navigate('Home Screen');
   };
   return (
     <View style={styles.container}>

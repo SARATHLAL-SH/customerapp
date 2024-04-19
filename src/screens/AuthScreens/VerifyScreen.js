@@ -5,7 +5,7 @@ import {StyleSheet,
   TextInput,
   TouchableOpacity,
   ScrollView,
-  KeyboardAvoidingView, } from 'react-native'
+  KeyboardAvoidingView,Keyboard } from 'react-native'
 import React,{useContext, useState, useRef, useEffect} from 'react'
 import smsLogo from '../../../Assets/Images/smartphonebg.png'
 import axios from 'axios'
@@ -13,6 +13,8 @@ import { colors } from '../../Globals/Styles'
 import {useNavigation} from  '@react-navigation/native'
 import { API } from '../../utils/apiUtils'
 import LoginContext from '../../Contexts/LoginPageContext'
+import {StoreToken} from '../AuthScreens/Utils/navigationutils'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const VerifyScreen = () => {
   const firstInput = useRef();
@@ -40,6 +42,7 @@ const VerifyScreen = () => {
     try {
       const otpResponce = await axios.post(API + 'send-otp', {mobileNumber});
       Navigation.navigate('Signup');
+      await AsyncStorage?.setItem('userData', mobileNumber);
     } catch (error) {
       console.log('error', error);
     }
@@ -61,20 +64,20 @@ const VerifyScreen = () => {
         mobileNumber,
       });
       token = otpResponce.data.accessToken;
-    //  console.log("statusofStatus", status.status)
+      console.log("statusofStatus", token)
       if (mobileUserData) {
-       
-       
-        Navigation.navigate('Signup');
-      }else if(mobileUserData ) {
-        Navigation.navigate('Verify');
+        await AsyncStorage?.setItem('token', token);
+        await AsyncStorage?.setItem('userData', mobileNumber);
+        setTimeout(()=>{
+          Navigation.navigate('Home Screen');
+        },500)
       }
+
       else {
-        // await AsyncStorage.setItem('token', token);
         // await AsyncStorage.removeItem('token');
         Navigation.navigate('Signup');
         console.log('no mobileuserdata',mobileUserData);
-        
+        await AsyncStorage?.setItem('userData', mobileNumber);
       }
 
       setError('Successfully Logged In');
@@ -104,6 +107,7 @@ const VerifyScreen = () => {
           // const parsedUserDetails = JSON.parse(response.data);
           const user = await response.data.users[0]?.username;
           console.log("user",user)
+          
           setMobileUserData(user);
         } else {
           setMobileUserData(null);
@@ -113,25 +117,10 @@ const VerifyScreen = () => {
       }
       
     };
-    // const getStatus = async()=>{
-    //   try{
-    //   const status = await  axios.get(API + 'get-mobile-status/'+ mobileNumber)
-    //     if (status) {
-    //       console.log("getStatus",status.data);
-    //       setStatus(status.data.status)
-    //     }
-    //     else{
-    //       setStatus(null);
-    //       console.log("getStatus data not available");
-    //     }
-    //   }catch(error){
-    //     console.log("error from getStatus", error)
-    //   }
     
-    // } 
    
     fetchData();
-    // getStatus();
+   
   }, [mobileNumber]);
 
   return (
@@ -218,6 +207,7 @@ const VerifyScreen = () => {
             style={[styles.loginBtnContainer]}
             onPress={siginButtonHandler}>
             <Text style={styles.btnText}>SIGN IN</Text>
+            {Keyboard.dismiss()}
           </TouchableOpacity>
         )}
       </View>
