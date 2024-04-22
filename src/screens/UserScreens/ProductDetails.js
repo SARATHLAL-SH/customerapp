@@ -7,6 +7,7 @@ import AddCartModal from '../../components/AddCartModal'
 import axios from 'axios'
 import LoginContext from '../../Contexts/LoginPageContext'
 import { fetchUser } from '../AuthScreens/Utils/navigationutils';
+import Header from '../../components/Header'
 
 const ProductDetails = () => {
    const route = useRoute();
@@ -78,8 +79,9 @@ useEffect(() => {
   }, [quantity, product.price]);
  
   return (
+   
     <View style={styles.container}>
-
+ {/* <Header title="Product Details" name="arrow-left" /> */}
       
       <View style={styles.productcontainer}>
         <View style={styles.productNameContainer}><Text style={styles.product}>{product.name}</Text></View>

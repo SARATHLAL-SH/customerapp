@@ -37,7 +37,7 @@ const CartNotification =  ({itemCount}) => {
         <Text style={styles.text}>Items available in Cart</Text>
         <View style={styles.countContainer}><Text style={styles.count} >{itemCount}</Text></View>
         </View>
-        <Icon name={"shopping-cart"} color='#b5045f' size={30}/> 
+        <Icon name={"shopping-cart"} color='green' size={30}/> 
      </TouchableOpacity >
         <View style={styles.minimize}>
         <TouchableOpacity>
@@ -75,16 +75,17 @@ export default CartNotification
 const styles = StyleSheet.create({
     subContainer:{
         flexDirection:'row',
-        backgroundColor:colors.GREEN,
+        backgroundColor:'#f78697',
         height:Dimensions.get('screen').width*0.10,
         justifyContent:'space-between',
         alignItems:'center',
-        paddingHorizontal:20
+        paddingHorizontal:20,
+        elevation:10
     },
     text:{
        fontWeight:'700',
        fontSize:18,
-       color:colors.SECONDARY_COLOR
+       color:colors.WHITE
     },
     countContainer:{width:25, 
         height:25,
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
     subContainerMax:{
         position:'absolute',
         flexDirection:'row',
-        backgroundColor:colors.GREEN,
+        backgroundColor:'#f78697',
         height:Dimensions.get('screen').width*0.10,
         width:Dimensions.get('screen').height*0.05,
         justifyContent:'center',

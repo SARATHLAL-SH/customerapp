@@ -8,7 +8,7 @@ import {useNavigation} from '@react-navigation/native'
 
 
 
-const SearchScreen = () => {
+const SearchScreen = ({setSearchTextValue}) => {
   const [inputValue, setInputValue] = useState();
   const [filterdata, setFilterData] = useState([]);
   const navigation = useNavigation()
@@ -16,21 +16,17 @@ const SearchScreen = () => {
 const {subCategory,apiError,searchText, setSearchText} = useContext(LoginContext)
 const ProductDetailsHandler = (item)=>{
   navigation.navigate("Product Details",{product:item})
+  setSearchText("")
 }
     
     useEffect(() => {
-      
-    
-        const filtered = subCategory?.filter(data =>
-          data.name.toLowerCase().includes(searchText.toLowerCase())
-        
+      const filtered = subCategory?.filter(data =>
+       data.name.toLowerCase().includes(searchText.toLowerCase())
         );
-       
-        setFilterData(filtered);
-        
-    
-    }, [searchText, subCategory]);
-    console.log("filterData", filterdata)
+       setFilterData(filtered);
+       }, [searchText, subCategory]);
+
+   
     console.log(searchText)
     const renderItem = ({item}) => (
       <TouchableOpacity style={styles.categoryContainer} onPress={()=>ProductDetailsHandler(item)}>

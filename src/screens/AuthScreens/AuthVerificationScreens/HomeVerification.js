@@ -12,7 +12,11 @@ import { useNavigation } from '@react-navigation/native';
 const HomeVerification = () => {
     const Navigation =useNavigation();
     const selectIDHandler=()=>{
-  Navigation.navigate("Select ID");
+  // Navigation.navigate("Select ID");
+  Navigation.reset({
+    index: 0,
+    routes: [{ name: 'Select ID' }],
+  });
     }
   return (
     <View style={styles.container}>

@@ -13,10 +13,10 @@ import { API } from '../utils/apiUtils'
 
 
 const RenderHome = () => {
-    const [searchTextValue,setSearchTextValue] = useState()
+   
     const [listcounts,setListCounts] = useState()
     const[count,setCount] = useState()
-const {searchText,listCount,getcartCount} = useContext(LoginContext)
+const {searchText,listCount,getcartCount,searchTextValue,setSearchTextValue} = useContext(LoginContext)
 
 useEffect(()=>{
   getcartCount();
@@ -35,7 +35,7 @@ const dismissKeyboard = () => {
     <View style={styles.container}>
      <GetLocation/>
     
-     {searchTextValue>0?<SearchScreen/>:<UserHomeScreen dismissKeyboard={dismissKeyboard}/>}
+     {searchTextValue>0?<SearchScreen />:<UserHomeScreen dismissKeyboard={dismissKeyboard}/>}
      {listCount>0?<CartNotification itemCount={listCount}/>:""}
      
     </View>

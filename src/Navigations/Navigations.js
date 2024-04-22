@@ -25,6 +25,9 @@ import { fetchToken, fetchUser } from '../screens/AuthScreens/Utils/navigationut
 import SignoutPage from '../screens/SignoutPage';
 import DeliveryLocation from '../screens/UserScreens/DeliveryLocation';
 import OrderStatus from '../screens/OrderStatus';
+import CameraCheck from '../components/CameraCheck';
+import SelfieVerification from '../screens/AuthScreens/AuthVerificationScreens/SelfieVerification';
+import UploadPanCard from '../screens/AuthScreens/AuthVerificationScreens/UploadPanCard';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -60,6 +63,7 @@ console.log(isToken)
         <Drawer.Screen name="Select Location" component={MapLocationSelector}/>
         <Drawer.Screen name="Shop Details" component={MapComponent}/>
         <Drawer.Screen name="Sign out" component={SignoutPage}/>
+       
         
       </Drawer.Navigator>
     );
@@ -67,9 +71,9 @@ console.log(isToken)
   
   const AppStack = () => {
     return (
-      <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen name="Home" component={RenderHome} />
-      <Stack.Screen name="Product Details" component={ProductDetails} />
+      <Stack.Navigator initialRouteName="Home" >
+      <Stack.Screen name="Home" component={RenderHome} options={{headerShown:false}}/>
+      <Stack.Screen name="Product Details" component={ProductDetails} options={{headerShown:true}}/>
       <Stack.Screen name="My Cart" component={MyCart} />
       <Stack.Screen name="Search" component={SearchScreen} />
       <Stack.Screen name="Category Details" component={Categories} />
@@ -87,7 +91,9 @@ console.log(isToken)
        <Stack.Screen name="Verify" component={HomeVerification}/>
        <Stack.Screen name="Signup" component={Signup}/>
        <Stack.Screen name = 'Select ID' component={SelectIDScreen}/>
-       {/* <Stack.Screen name='Upload Aadhaar' component={UploadAdhaar}/>  */}
+       <Stack.Screen name='Upload Aadhaar' component={UploadAdhaar}/> 
+       <Stack.Screen name='Upload PanCard' component={UploadPanCard}/>
+       <Stack.Screen name='Upload Selfie' component={SelfieVerification}/>
      </Stack.Navigator>)
   }
   
@@ -100,7 +106,7 @@ console.log(isToken)
     <Stack.Screen name="AuthStack" component={AuthStack} />}
       <Stack.Screen name="Home Screen" component={AppDrawer} />
       <Stack.Screen name="Login Screen" component={AuthStack} />
-      {/* <Stack.Screen name='Order Status' component={OrderStatus} options={{headerShown:false}}/> */}
+      <Stack.Screen name="Login" component={LoginScreen} options={{headerShown:false}}/>
          </Stack.Navigator>
   </LoginPageContext>
    

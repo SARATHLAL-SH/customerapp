@@ -9,11 +9,11 @@ const SignoutPage = () => {
     const Navigation = useNavigation();
     const signOutHandler = async()=>{
         await AsyncStorage.removeItem('token');
-        Navigation.navigate('Login Screen')
+        Navigation.navigate('Login')
     }
   return (
    
-    <View>
+    <View style={styles.container}>
         <TouchableOpacity style={styles.btnContainer} onPress={signOutHandler}>
         <Text style={styles.btnText}>SignOut</Text>
         </TouchableOpacity>
@@ -31,11 +31,12 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     btnContainer:{
-        backgroundColor:"blue",
+        backgroundColor:colors.ERROR,
         padding:5,
         justifyContent:'center',
         alignItems:'center',
-        marginTop:"50%"
+       paddingHorizontal:20,
+       borderRadius:5
     },
     btnText:{
         fontWeight:'700',

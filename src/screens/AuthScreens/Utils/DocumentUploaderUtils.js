@@ -261,7 +261,10 @@ const validateBack_Aadhar_Handler = async (
         setMessage('Successfully Uploaded Adhaar Card');
     
         setImageHandler();
-        Navigation.navigate('Take Selfie')
+         Navigation.reset({
+          index: 0,
+          routes: [{ name: 'Upload Selfie' }],
+        });
         return;
       }
     } catch (error) {

@@ -11,7 +11,7 @@ export const LoginPageContext = ({children}) => {
     const [searchText, setSearchText] = useState('');
     const [userLocationCoords,setuserLocationCoords] =useState({latitude: 22.5786,longitude:88.3689})
     const [listCount,setListCount] = useState(0)
-    
+    const [searchTextValue,setSearchTextValue] = useState()
     const [isAdhaar, setIsAdhaar] = useState(false);
     const [isPanCard, setIsPanCard] = useState(false);
     const [loginToken, setLoginToken] = useState('');
@@ -69,7 +69,7 @@ export const LoginPageContext = ({children}) => {
    <LoginContext.Provider value={{
     mobileNumber,
     setMobileNumber,userLocationCoords,setuserLocationCoords,getcartCount,subCategory,apiError,searchText, setSearchText,
-    listCount,setListCount,isAdhaar, setIsAdhaar,isPanCard, setIsPanCard,loginToken, setLoginToken,getUserData, setGetUserData,status,setStatus,fetchData}}>
+    listCount,setListCount,isAdhaar, setIsAdhaar,isPanCard, setIsPanCard,loginToken, setLoginToken,getUserData, setGetUserData,status,setStatus,fetchData,searchTextValue,setSearchTextValue}}>
     {children}
    </LoginContext.Provider>
   )

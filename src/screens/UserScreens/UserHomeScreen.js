@@ -139,7 +139,7 @@ if (loading || shouldFetchData) {
       <View style={styles.mapContainer}>
         {priceFilterData.slice(0, priceFilterData.length)?.map(item => (
           <TouchableOpacity key={item?._id.toString()} style={styles.productListContainer} onPress={() => ProductDetailsHandler(item)}>
-            <Image source={{ uri: API + "get/imageswinesubcategories/" + item.images }} style={styles.shopImage} />
+            <Image source={{ uri: API + "imageswinesubcategories/" + item.images }} style={styles.shopImage} />
             <Text style={styles.itemCaption} numberOfLines={1} ellipsizeMode="tail">{item.name}</Text>
             <View style={styles.priceContainer}>
               <Text style={styles.itemPrice}>₹{item.price}</Text>

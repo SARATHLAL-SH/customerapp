@@ -10,3 +10,7 @@ export const colors = {
   GREY: '#857e81',
   
 };
+
+export const parameters = {
+  headerHeight: 50,
+};

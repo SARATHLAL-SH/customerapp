@@ -27,17 +27,17 @@ const VerifyScreen = () => {
   const [showResendOTP, setShowResendOTP] = useState(false);
   const Navigation = useNavigation();
   const [mobileUserData, setMobileUserData] = useState();
-  // const status = useGetStatus(mobileNumber);
-
-  let token = '';
+   let token = '';
   const otpLength = Object.values(otps).filter(value => value !== '').length;
+  
+  
   const resendOtpTextHandler = () => {
     const timer = setTimeout(() => {
       setShowResendOTP(!showResendOTP);
     }, 10000);
-
     return () => clearTimeout(timer);
   };
+
   const resenndOtpHanlder = async () => {
     try {
       const otpResponce = await axios.post(API + 'send-otp', {mobileNumber});
@@ -54,16 +54,26 @@ const VerifyScreen = () => {
     }, 3000);
   };
 
-  const siginButtonHandler = async () => {
-  
+  const getStatus =async()=>{
+try{
+  const status = await axios.get(`${API}get-mobile-status/${mobileNumber}`);
+  if(status.data){
+    console.log("status update:",status.data)
+  }
+}catch(error){
+  console.log("error in VerifyScreen checkStatus fun",error)
+}
+  }
 
-    try {
+  const siginButtonHandler = async () => {
+   try {
       const otp = Object.values(otps).join('');
       const otpResponce = await axios.post(API + 'verify-otp', {
         otp,
         mobileNumber,
       });
       token = otpResponce.data.accessToken;
+      console.log("status checking", otpResponce.data)
       console.log("statusofStatus", token)
       if (mobileUserData) {
         await AsyncStorage?.setItem('token', token);
@@ -113,12 +123,12 @@ const VerifyScreen = () => {
           setMobileUserData(null);
         }
       } catch (error) {
-        console.log(error);
+        console.log("error in VerifyScreen fetchdata",error);
       }
       
     };
     
-   
+    getStatus();
     fetchData();
    
   }, [mobileNumber]);
