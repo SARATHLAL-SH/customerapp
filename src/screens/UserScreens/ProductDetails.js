@@ -86,7 +86,7 @@ useEffect(() => {
       <View style={styles.productcontainer}>
         <View style={styles.productNameContainer}><Text style={styles.product}>{product.name}</Text></View>
         
-        <Image source={{uri:API+"get/imageswinesubcategories/"+product.images}} style={styles.shopImage}/>
+        <Image source={{uri:API+"imageswinesubcategories/"+product.images}} style={styles.shopImage}/>
 
         <View style={styles.priceContainer}>
 

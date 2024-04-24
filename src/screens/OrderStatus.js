@@ -11,6 +11,7 @@ const OrderStatus = () => {
     <View style={styles.container}>
         <Text style={[styles.statusText,{color:route.params.status ==='success'?'green':'red'}]}>{route.params.status ==='success'?'Paymemnt Success':'Payment Failed'}</Text>
       {route.params.status !=='success' &&(<TouchableOpacity style={styles.btnContaienr} onPress={()=>navigation.navigate('Delivery Location')}><Text style={styles.button}>BACK TO PAYMENT</Text></TouchableOpacity>)}
+      {route.params.status ==='success' &&(<TouchableOpacity style={styles.btnContaienr} onPress={()=>navigation.navigate('Home')}><Text style={styles.button}>HOME</Text></TouchableOpacity>)}
     </View>
   )
 }

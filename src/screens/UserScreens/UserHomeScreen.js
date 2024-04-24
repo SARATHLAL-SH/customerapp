@@ -8,6 +8,8 @@ import { API } from '../../utils/apiUtils'
 import axios from 'axios'
 import {useNavigation} from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useDispatch,useSelector } from 'react-redux'
+import { fetchProducts } from '../../Redux/slices/subCategorySlice'
 
 const UserHomeScreen = ({ dismissKeyboard }) => {
 
@@ -23,20 +25,16 @@ const UserHomeScreen = ({ dismissKeyboard }) => {
   const [shouldFetchData, setShouldFetchData] = useState(true)
   const [priceFilterData,setPriceFilterData] = useState([]);
   const [isFilter,setIsFilter] = useState(false);
- 
+ const dispatch = useDispatch();
+ const productDatas = useSelector(state=>state.products)
+ const products = productDatas?.data
+
+
   useEffect(() => {
     const getAllProducts = async()=>{
+      dispatch(fetchProducts())
       try{
-          const response = await axios.get(API+"get-all-wine-subcategories");
-          if(response.data){
-          setProductData(response.data);
-          setLoading(false)
-          } 
-          else{
-          console.log("data not available")
-          }
-
-          const categroy = await axios.get(API + 'get-all-categories');
+         const categroy = await axios.get(API + 'get-all-categories');
           
           if(categroy.data){
             setCategoryData(categroy.data);
@@ -55,7 +53,11 @@ const UserHomeScreen = ({ dismissKeyboard }) => {
    getAllProducts();
    setShouldFetchData(false);
   }
-  }, [shouldFetchData]);
+  }, [shouldFetchData,dispatch]);
+
+setTimeout(()=>{
+  setProductData(products)
+})
 
 if (loading || shouldFetchData) {
   return null;
@@ -161,7 +163,7 @@ if (loading || shouldFetchData) {
     <View style={styles.mapContainer}>
      {productData?.slice(0, showAllProducts ? productData.length : numRowsToShow).map(item => (
      <TouchableOpacity key={item?._id.toString()} style={styles.productListContainer} onPress={() => ProductDetailsHandler(item)}>
-     <Image source={{ uri: API + "get/imageswinesubcategories/" + item.images }} style={styles.shopImage} />
+     <Image source={{ uri: API + "imageswinesubcategories/" + item.images }} style={styles.shopImage} />
      <Text style={styles.itemCaption} numberOfLines={1} ellipsizeMode="tail">{item.name}</Text>
      <View style={styles.priceContainer}>
      <Text style={styles.itemPrice}>₹{item.price}</Text>
@@ -229,7 +231,7 @@ const styles = StyleSheet.create({
         elevation:10
       },
       flPrice:{
-       color:"#6d0470",
+       color:colors.MAIN_COLOR,
        fontWeight:'700',
        paddingHorizontal:5
       },

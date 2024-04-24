@@ -53,7 +53,7 @@ const MyCart = () => {
         console.log("unable to fetch data ")
       }
     } catch(error){
-      console.log("cart inside MyCart",error)
+      console.log("cart inside MyCart",error.message)
     }
   }
        
@@ -135,7 +135,7 @@ try{
     return (
       <View style={styles.listItemContainer}>
         
-        <Image source={{uri:API+"get/imageswinesubcategories/"+item?.cart?.images}} style={styles.shopImage}/>
+        <Image source={{uri:API+"imageswinesubcategories/"+item?.cart?.images}} style={styles.shopImage}/>
 
         <View style={styles.itemContainer}>
         <Text style={styles.productName}>{item?.cart?.name}</Text>

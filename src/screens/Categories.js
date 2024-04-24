@@ -92,7 +92,7 @@ import {useNavigation} from '@react-navigation/native'
          
          
           <TouchableOpacity style={{alignItems:'center',width:100, marginVertical:1}} onPress={()=>ProductDetailsHandler(item)}>
-          <Image source={{uri:API+"get/imageswinesubcategories/"+item.images}} style={styles.shopImages}/>
+          <Image source={{uri:API+"imageswinesubcategories/"+item.images}} style={styles.shopImages}/>
           <Text style={{fontWeight:'700',marginTop:5, color:colors.MAIN_COLOR,fontSize:16,textAlign:'center'}} numberOfLines={1} 
           ellipsizeMode="tail">{item.name}</Text>
           <View style={{flexDirection:'row', justifyContent:'space-between', }}>

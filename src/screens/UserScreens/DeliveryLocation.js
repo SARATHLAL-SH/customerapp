@@ -21,14 +21,19 @@ const DeliveryLocation = () => {
     const [flattenedData,setFlattenedData] = useState()
     const [cartItems,setCartItems] = useState();
     const [mergedDatas,setMergedDatas] = useState()
-    const {mobileNumber} = useContext(LoginContext)
+    const {mobileNumber,setListCount} = useContext(LoginContext)
     const navigation =useNavigation()
+    const shopid =[]
+    const[oredersId,setOrdersId] = useState();
+    const cartProduct =[]
+
     useEffect(()=>{
       checkAddress();
       AddressSelector('home');
       shopLocation();
       fetchCartDetails()
   },[])
+
     const messageHandler = (msg) =>{
         setMessage(msg);
         setTimeout(()=>{
@@ -38,30 +43,20 @@ const DeliveryLocation = () => {
 
     console.log("storedAddress",storedAddress)
       const AddressSelector = async (type) => {
-        // Filter the storedAddress array based on the provided type
         const addressesOfType = storedAddress?.filter(item => item.localAddress.locationType === type);
         if (!addressesOfType || addressesOfType.length === 0) {
-            // Handle case when no address of the specified type is found
-            return;
+        return;
         }
-        
-        // Find the last item in the filtered array
-        const lastAddress = addressesOfType[addressesOfType.length - 1];
-        
-        // Update the state with the last address
+
+      const lastAddress = addressesOfType[addressesOfType.length - 1];
         setAddress(lastAddress);
-        
-        // Update location with the latitude and longitude of the last address
         location.latitude = lastAddress.localAddress.latitude;
         location.longitude = lastAddress.localAddress.lognitude;
-        
-        // Trigger the shopLocation function with the updated location
         shopLocation();
-        
-        // Set the selectedOption to the provided type
         setSelectedOption(type);
     };
-       const fetchCartDetails = async()=>{
+
+      const fetchCartDetails = async()=>{
         try{
           const response = await  axios.get(API+"get-add-cart-all");
           if(response){
@@ -75,7 +70,7 @@ const DeliveryLocation = () => {
         }
       }
 
-    const checkAddress =async() =>{
+      const checkAddress =async() =>{
         try{
           const response = await axios.get(API+'get-local-and-permanent-address');
           if(response.data)
@@ -91,26 +86,26 @@ const DeliveryLocation = () => {
         }
         }
 
-        const shopLocation= async()=>{
-            try{
-              const response = await axios.get(API+"get-all-shoplocation");
-              if(response.data){
-               const locations = response.data
-               const extractMarkers = locations.map(item => {
-                const product = item.availableCategory?.map(product => ({
-                    productId: product._id,
-                    productName: product.name
+      const shopLocation= async()=>{
+          try{
+          const response = await axios.get(API+"get-all-shoplocation");
+          if(response.data){
+          const locations = response.data
+          const extractMarkers = locations.map(item => {
+          const product = item.availableCategory?.map(product => ({
+                productId: product._id,
+                productName: product.name
                     }));
                 return {
-                    latitude: item.latitude,
-                    longitude: item.longitude,
-                    title: item.ShopName,
-                    id: item._id,
-                    product: product
+                latitude: item.latitude,
+                longitude: item.longitude,
+                title: item.ShopName,
+                id: item._id,
+                product: product
                 };
             });
     
-            const flattenedData = extractMarkers.flatMap(({ id, latitude, longitude, product, title }) =>
+        const flattenedData = extractMarkers.flatMap(({ id, latitude, longitude, product, title }) =>
             product.flatMap(({ productId, productName }) =>
            ({ id, latitude, longitude, productId, productName, title })
            )
@@ -128,43 +123,35 @@ const DeliveryLocation = () => {
             else{
             console.log("Shop details not available in  Map Component")
            }
-      
-            }catch(error){
-              console.log("error in delivery location ",error)
+           }catch(error){
+            console.log("error in delivery location ",error)
             }
           }
        
-    // const cartIds = cartItems?.map(item => item?.cart._id);
-   
     console.log("address",Address)
     const shopNames = [];
     const shopAndProducts = [];
- 
+ console.log("cartItems", cartItems)
     cartItems?.forEach(cartItem => {
-      // Check if cartItem.cart exists and is not null
       if (cartItem?.cart && flattenedData) {
-          const foundItem = flattenedData.find(item => item.productId === cartItem.cart._id);
-          
-          // Check if foundItem exists
-          if (foundItem) {
-              shopAndProducts?.push({
-                  shopName: foundItem.title,
-                  product: {
-                      productId: foundItem.productId,
-                      productName: foundItem.productName,
-                      shopId: foundItem.id
-                  }
-              });
-          }
+      const foundItem = flattenedData.find(item => item.productId === cartItem.cart._id);
+      if (foundItem) {
+      shopAndProducts?.push({
+      shopName: foundItem.title,
+      product: {
+        productId: foundItem.productId,
+        productName: foundItem.productName,
+        shopId: foundItem.id,
+        cartProduct:foundItem.productId
+      }
+      });
+      }
       } else {
-          // Handle the case where cartItem.cart is null or flattenedData is null
-          console.log('cartItem.cart is null or flattenedData is null:', cartItem);
+      console.log('cartItem.cart is null or flattenedData is null:', cartItem);
       }
   });
-  
-
+ 
 const distances = [];
-
 
 shopAndProducts?.forEach(shop => {
         const existingShop = distances.find(item => item.shopName === shop.shopName);
@@ -173,76 +160,47 @@ shopAndProducts?.forEach(shop => {
         
         if (shopEntry) {
             distances.push({
-              distance: shopEntry.distance,
-              shopName: shop.shopName,
-                shopId:shopEntry.id,
-                
-                
-            });
+            distance: shopEntry.distance,
+            shopName: shop.shopName,
+            shopId:shopEntry.id,
+             });
+         shopid.push (shopEntry.id);   
         }
     }
 });
-// const mergedDataofCartItems = cartItems?.map(cartItem => {
-//   const matchingProduct = shopAndProducts?.find(shopProduct => shopProduct.product.productId === cartItem.cart._id);
-//   return { ...cartItem, ...(matchingProduct ? matchingProduct : {}) };
-// });
+
 const mergedDataofCartItems = cartItems?.map(cartItem => {
-  // Check if cartItem.cart exists and is not null
-  if (cartItem?.cart && shopAndProducts) {
+    if (cartItem?.cart && shopAndProducts) {
       const matchingProduct = shopAndProducts.find(shopProduct => shopProduct.product.productId === cartItem.cart._id);
-      
-      // Check if matchingProduct exists
       if (matchingProduct) {
-          // Merge cartItem with matchingProduct
-          return { ...cartItem, ...matchingProduct };
+       return { ...cartItem, ...matchingProduct };
       }
   } else {
-      // Handle the case where cartItem.cart is null or shopAndProducts is null
-      console.log('mergedData Invalid cartItem or shopAndProducts is null:', cartItem);
-    // messageHandler(cartItem, 'is not available in nearest shops')
-  }
-
-  // Return cartItem if matchingProduct couldn't be found or if there's an error
+    console.log('mergedData Invalid cartItem or shopAndProducts is null:', cartItem);
+    }
   return cartItem;
 });
 
-
-// console.log("mergedDataofCartItems",mergedDataofCartItems);
-
-// console.log("distances",distances)
-
 const mergedData = shopAndProducts?.map(shopName => {
-  const matchingDistance = distances?.find(distance => distance.shopId === shopName.product.shopId);
-  // console.log("matchingdata", matchingDistance)
+const matchingDistance = distances?.find(distance => distance.shopId === shopName.product.shopId);
   return {
-      ...shopName,
-      distance: matchingDistance ? matchingDistance.distance : null
+    ...shopName,
+    distance: matchingDistance ? matchingDistance.distance : null
   };
 });
-// const mergeAlldata = mergedDataofCartItems?.map(item => {
-//   const matchingDistance = distances?.find(distance => distance.shopId === item.product?.shopId);
-//   return { ...item, ...(matchingDistance ? { distance: matchingDistance.distance } : {}) };
-// });
+
 const mergeAlldata = mergedDataofCartItems?.map(item => {
-  // Check if item.product exists and has a valid shopId
-  if (item.product?.shopId && distances) {
+    if (item.product?.shopId && distances) {
       const matchingDistance = distances.find(distance => distance.shopId === item.product.shopId);
-      
-      // Check if matchingDistance exists
       if (matchingDistance) {
-          // Merge the item with the distance if it exists
-          return { ...item, distance: matchingDistance.distance };
+       return { ...item, distance: matchingDistance.distance };
       }
   } else {
-      // Handle the case where item.product is null or doesn't have a valid shopId, or distances is null
-      console.log('mergeAllData Invalid item or distances is null:', item);
-      // messageHandler(item,'is not available in nearest shops')
-  }
-
-  // Return the item without merging distance if it couldn't be found
+         console.log('mergeAllData Invalid item or distances is null:', item);
+       }
   return item;
 });
-//  console.log("mergeAllDarta", mergeAlldata)
+
 
 const renderItem = ({ item }) => (
   <View style={styles.itemContainer}>
@@ -251,7 +209,7 @@ const renderItem = ({ item }) => (
     <Text style={styles.itemText}>Quantity: {item?.quantity}</Text>
     <Text style={styles.itemText}>Price: {item?.cart?.price}</Text>
     <Text style={styles.itemText}>{item?.shopName ? `Wine Shop: ${item.shopName}` : 'This Item not available in Nearest Shops'}</Text>
-    {item?.distance && <Text style={styles.itemText}>Distance: {item?.distance}</Text>}
+    <Text style={styles.itemText}>Distance: {item?.distance}</Text>
   
     </View>
     <View>
@@ -304,7 +262,40 @@ if (totalPriceSum <= 750) {
 } else {
   serviceCharge = 300;
 }
-
+const productId = cartItems?.map(item => item._id);
+console.log("CARTiTEM",productId)
+const passingData = async (ordrId) => {
+  console.log("orderId in passing data",ordrId)
+  try {
+   const response = await axios.post(API + 'create-all-customer-product', {
+      totalPriceSum: totalPriceSum,
+      deliveryCharges: deliveryCharges,
+      serviceCharges: serviceCharge,
+      grandTotalPrice: grandTotal,
+      customerAddress: Address?._id,
+      productDetails: productId,
+      shopDetails: shopid,
+      orderId:ordrId
+    });
+  
+    if (response.data) {
+      console.log('response for passing data', response.data);
+    }
+    else{
+      console.log('unable to add data in to database')
+    }
+    const cartDelete = await axios.delete(API+'delete-all-cart-items');
+    if(cartDelete.data){
+    console.log('deleted successfull');
+    setListCount(0);
+    }
+    else{
+     console.log("error while deleting cart Items")
+    }
+  } catch (error) {
+    console.log('error in deliveryLocation merge Data', error.message);
+  }
+};
 // Calculate grand total for all shops
 const grandTotal = totalPriceSum + deliveryCharges.reduce((acc, curr) => acc + curr, 0) + serviceCharge;
 
@@ -317,7 +308,7 @@ const razorpayment =()=>{
     description: 'Credits towards consultation',
     image: 'https://i.imgur.com/3g7nmJC.jpg',
     currency: 'INR',
-    key: 'rzp_test_GWXTpz4WCpfDNs',
+    key: 'rzp_test_n0XgF5IDRmHwfd',
     amount: grandTotal*100,
     name: 'Sura App',
     order_id: '',//Replace this with an order_id created using Orders API.
@@ -333,7 +324,8 @@ const razorpayment =()=>{
     alert(`Success: ${data.razorpay_payment_id}`);
     navigation.navigate('Order Status',{status:'success',
     paymentId:data.razorpay_payment_id})
-    
+    setOrdersId(data.razorpay_payment_id)
+    passingData(data.razorpay_payment_id);
   }).catch((error) => {
     // handle failure
     alert(`Error: ${error.code} | ${error.description}`);

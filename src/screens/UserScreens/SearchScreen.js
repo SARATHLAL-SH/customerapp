@@ -30,7 +30,7 @@ const ProductDetailsHandler = (item)=>{
     console.log(searchText)
     const renderItem = ({item}) => (
       <TouchableOpacity style={styles.categoryContainer} onPress={()=>ProductDetailsHandler(item)}>
-      <Image source={{uri:API+"get/imageswinesubcategories/"+item.images}} style={styles.image}/>
+      <Image source={{uri:API+"imageswinesubcategories/"+item.images}} style={styles.image}/>
      <View style={styles.detailContainer}>
      <Text style={styles.searchItemName} numberOfLines={1} 
               ellipsizeMode="tail">  {item.name}</Text>

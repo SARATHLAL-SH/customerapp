@@ -80,7 +80,9 @@ const styles = StyleSheet.create({
         justifyContent:'space-between',
         alignItems:'center',
         paddingHorizontal:20,
-        elevation:10
+        elevation:20,
+        borderTopWidth:1.5,
+        borderColor:'#e61964'
     },
     text:{
        fontWeight:'700',

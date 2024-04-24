@@ -93,7 +93,7 @@ const handleSubmit = async() => {
       try{
         const response = await axios.post(API+'add-local-address', {
           localAddress: inputValues,
-          customerPermanentAddress: userInfo?.users[0]._id
+          customerPermanentAddress: userInfo?.users[0]?._id
         });
         console.log('Address added successfully:', response.data);
       }catch(error){
@@ -105,14 +105,15 @@ const handleSubmit = async() => {
         alert("Please select an option before submitting.");
       }
     };
-console.log("userInfo", userInfo)
+
 const fetchUserData = async ()=>{
     try{
       const userData = await fetchUser();
+      console.log("userInfo", userData)
       const response = await axios.get(API+'get-register-user/' + userData)
       if(response.data){
       setUserInfo(response.data)
-      
+      console.log("fetchuserInfo", response.data)
       }
       else{
         console.log("no data when fetching fetch user function in setPermentAddrss")
@@ -122,7 +123,7 @@ const fetchUserData = async ()=>{
       messageHandler(error.message)
     }
     }
-
+console.log("userinfor",userInfo)
 
 const locationReader = async()=>{
      try{
